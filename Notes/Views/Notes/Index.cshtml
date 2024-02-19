@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Notes Page";
+}
+
+@model List<Notes.Models.Note>
+
+
+<div class="container-fluid">
+    <div class="row mb-3">
+        <div class="col-12">
+            <button id="saveFile" class="btn btn-success">Сохранить в файл</button>
+            <a id="loadFromFile" class="btn btn-primary">Загрузить из файла</a>
+        </div>
+    </div>
+
+    <div id="blockAlert" class="alert alert-primary fade" role="alert">
+        <strong id="textAlert"></strong>
+    </div>
+
+    <div id="listNotes" class="row mt-3">
+        @*@Html.Partial("_NotesPartial", Model)*@
+    </div>
+</div>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const blockAlert = $("#blockAlert");
+        const textAlert = $("#textAlert");
+
+        function showAlert(message, isSuccess) {
+            textAlert.text(message);
+            if (isSuccess) {
+                blockAlert.removeClass("alert-warning");
+                blockAlert.addClass("alert-primary");
+            }
+            else {
+                blockAlert.removeClass("alert-primary");
+                blockAlert.addClass("alert-warning");
+            }
+            blockAlert.addClass("show");
+            setTimeout(() => blockAlert.removeClass("show"), 2000);
+        }
+
+        $("#saveFile").click(() => {
+            $.ajax({
+                url: "/Notes/SaveInFile",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(@Json.Serialize(Model)),
+                success: (data) => {
+                    showAlert(data.message, data.success);
+                },
+                error: (err) => {
+                    showAlert(err.responseText, false);
+                }
+            });
+        });
+
+        $("#loadFromFile").click((e) => {
+            e.preventDefault();
+            $("#listNotes").load("/Notes/LoadFromFile");
+        });
+    });
+</script>

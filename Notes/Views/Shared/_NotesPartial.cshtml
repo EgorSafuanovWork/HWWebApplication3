@@ -1,0 +1,18 @@
+﻿@model List<Notes.Models.Note>
+
+@if (Model is not null)
+{
+    foreach (var note in Model)
+    {
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">@note.Title</h5>
+                    <p class="card-text">@note.Text</p>
+                    <p class="card-text"><small class="text-muted">@note.CreateDT</small></p>
+                    <p class="card-text"><small class="text-muted">@note.GetTagsString()</small></p>
+                </div>
+            </div>
+        </div>
+    }
+}
